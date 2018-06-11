@@ -13,21 +13,24 @@ export default class Memo extends Component {
 		const {
 			idx,
 			content,
+			increaseZIndex,
 			onChangeText,
 			onClickButtonAdd,
 			onClickButtonDelete,
 			onDragStart,
 			clientX,
-			clientY
+			clientY,
+			zIndex
 		} = this.props;
 
 		return (
 			<div
-				style={Object.assign({}, containerStyle, { left: `${clientX}px`, top: `${clientY}px` })}
+				style={Object.assign({}, containerStyle, { zIndex, left: `${clientX}px`, top: `${clientY}px` })}
 				id={`memo-${idx}`}
 				idx={idx}
 				draggable={true}
 				onDragStart={onDragStart}
+				onClick={increaseZIndex}
 			>
 				<div style={buttonContainerStyle}>
 					<button
@@ -61,9 +64,7 @@ export default class Memo extends Component {
 
 const styles = {
 	containerStyle: {
-		position: 'relative',
-		left: '100px',
-		top: '10px',
+		position: 'absolute',
 		border: '1px solid palevioletred',
 		background: 'lightblue',
 		minWidth: '200px',
@@ -112,6 +113,8 @@ Memo.propTypes = {
 	onClickButtonAdd: PropTypes.func.isRequired,
 	onClickButtonDelete: PropTypes.func.isRequired,
 	onDragStart: PropTypes.func.isRequired,
+	increaseZIndex: PropTypes.func.isRequired,
 	clientX: PropTypes.number.isRequired,
-	clientY: PropTypes.number.isRequired
+	clientY: PropTypes.number.isRequired,
+	zIndex: PropTypes.number.isRequired
 };

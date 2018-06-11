@@ -9,16 +9,29 @@ export default class App extends Component {
 	constructor() {
 		super();
 		this.state = {
-			memo: [{ content: '', clientX: 50, clientY: 20 }],
+			memo: [{ content: '', clientX: 40, clientY: 40, zIndex: 0 }],
 			offsetX: 0,
 			offsetY: 0,
-			dragging: null
+			dragging: null,
+			zIndex: 0
 		};
 	}
 
-	onClickButtonAdd = () => {
+	onClickButtonAdd = e => {
+		const zIndex = this.state.zIndex + 1;
 		this.setState(prevState => (
-			{ memo: [...prevState.memo, { content: '' }] }
+			{
+				zIndex,
+				memo: [
+					...prevState.memo,
+					{
+						zIndex,
+						content: '',
+						clientX: 75,
+						clientY: 75
+					}
+				]
+			}
 		));
 	}
 
@@ -39,17 +52,19 @@ export default class App extends Component {
 	onDrop = e => {
 		const idx = this.state.dragging.getAttribute('idx');
 		const memo = this.state.memo;
+		const zIndex = this.state.zIndex + 1;
 		memo[idx].clientX = e.clientX - this.state.offsetX;
 		memo[idx].clientY = e.clientY - this.state.offsetY;
+		memo[idx].zIndex = zIndex;
 
-		this.setState({ memo });
+		this.setState({ memo, zIndex });
 	}
 
 	onDragOver = e => {
 		e.preventDefault();
 	}
 
-	onDragEnd = e => {
+	onDragEnd = () => {
 		this.setState({ dragging: null });
 	}
 
@@ -61,6 +76,12 @@ export default class App extends Component {
 		this.setState({ offsetX, offsetY, dragging: e.target });
 	}
 
+	increaseZIndex = e => {
+		e.target.parentNode.style.zIndex = this.state.zIndex;
+
+		this.setState(prevState => ({ zIndex: prevState.zIndex + 1 }));
+	}
+
 	renderMemo() {
 		return this.state.memo.map((val, idx) => {
 			return (
@@ -70,10 +91,12 @@ export default class App extends Component {
 					content={val.content}
 					clientX={val.clientX}
 					clientY={val.clientY}
+					zIndex={val.zIndex}
 					onClickButtonAdd={this.onClickButtonAdd}
 					onClickButtonDelete={this.onClickButtonDelete}
 					onChangeText={this.onChangeText}
 					onDragStart={this.onDragStart}
+					increaseZIndex={this.increaseZIndex}
 				/>
 			);
 		});
