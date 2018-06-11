@@ -1,10 +1,6 @@
 import React, { Component } from 'react';
 
 export default class Memo extends Component {
-	// onClickButton = e => {
-	// 	console.log(e.target);
-	// }
-
 	render() {
 		const {
 			containerStyle,
@@ -13,6 +9,13 @@ export default class Memo extends Component {
 			footerDivStyle,
 			textareaStyle
 		} = styles;
+		const {
+			idx,
+			content,
+			onChangeText,
+			onClickButtonAdd,
+			onClickButtonDelete
+		} = this.props;
 
 		return (
 			<div style={containerStyle}>
@@ -20,23 +23,25 @@ export default class Memo extends Component {
 					<button
 						style={buttonStyle}
 						type='button'
-						onClick={this.onClickButton}
+						onClick={onClickButtonAdd}
 					>
-						{/*<strong style={{ fontSize: '14px' }}>+</strong>*/}
 						+
 					</button>
 
 					<button
 						style={buttonStyle}
 						type='button'
-						onClick={this.onClickButton}
+						onClick={onClickButtonDelete(idx)}
 					>
-						{/*<strong>x</strong>*/}
 						x
 					</button>
 				</div>
 
-				<textarea	style={textareaStyle} />
+				<textarea
+					onChange={onChangeText(idx)}
+					style={textareaStyle}
+					value={content}
+				/>
 
 				<div style={footerDivStyle} />
 			</div>
