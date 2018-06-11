@@ -65,8 +65,9 @@ export default class Memo extends Component {
 const styles = {
 	containerStyle: {
 		position: 'absolute',
-		border: '1px solid palevioletred',
-		background: 'lightblue',
+		border: '1px solid #8dcbde',
+		background: '#87c5d7',
+		boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)',
 		minWidth: '200px',
 		minHeight: '160px',
 		width: '200px',
@@ -77,6 +78,7 @@ const styles = {
 		flexDirection: 'column'
 	},
 	buttonContainerStyle: {
+		backgroundColor: '#7dbbce',
 		boxSizing: 'border-box',
 		display: 'flex',
 		justifyContent: 'space-between',

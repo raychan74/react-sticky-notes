@@ -17,7 +17,7 @@ export default class App extends Component {
 		};
 	}
 
-	onClickButtonAdd = e => {
+	onClickButtonAdd = () => {
 		const zIndex = this.state.zIndex + 1;
 		this.setState(prevState => (
 			{
@@ -77,7 +77,7 @@ export default class App extends Component {
 	}
 
 	increaseZIndex = e => {
-		e.target.parentNode.style.zIndex = this.state.zIndex;
+		e.target.parentNode.style.zIndex = this.state.zIndex + 1;
 
 		this.setState(prevState => ({ zIndex: prevState.zIndex + 1 }));
 	}
