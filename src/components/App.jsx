@@ -9,7 +9,10 @@ export default class App extends Component {
 	constructor() {
 		super();
 		this.state = {
-			memo: [{ content: '' }]
+			memo: [{ content: '', clientX: 50, clientY: 20 }],
+			offsetX: 0,
+			offsetY: 0,
+			dragging: null
 		};
 	}
 
@@ -33,6 +36,31 @@ export default class App extends Component {
 		this.setState({ memo });
 	}
 
+	onDrop = e => {
+		const idx = this.state.dragging.getAttribute('idx');
+		const memo = this.state.memo;
+		memo[idx].clientX = e.clientX - this.state.offsetX;
+		memo[idx].clientY = e.clientY - this.state.offsetY;
+
+		this.setState({ memo });
+	}
+
+	onDragOver = e => {
+		e.preventDefault();
+	}
+
+	onDragEnd = e => {
+		this.setState({ dragging: null });
+	}
+
+	onDragStart = e => {
+		const idx = e.target.getAttribute('idx');
+		const offsetX = e.clientX - this.state.memo[idx].clientX;
+		const offsetY = e.clientY - this.state.memo[idx].clientY;
+
+		this.setState({ offsetX, offsetY, dragging: e.target });
+	}
+
 	renderMemo() {
 		return this.state.memo.map((val, idx) => {
 			return (
@@ -40,28 +68,28 @@ export default class App extends Component {
 					key={idx}
 					idx={idx}
 					content={val.content}
+					clientX={val.clientX}
+					clientY={val.clientY}
 					onClickButtonAdd={this.onClickButtonAdd}
 					onClickButtonDelete={this.onClickButtonDelete}
 					onChangeText={this.onChangeText}
+					onDragStart={this.onDragStart}
 				/>
 			);
 		});
 	}
 
 	render() {
+		console.log('render:', this.state);
 		return (
-			<div>
-				<div
-					style={{ height: '100%', width: '100%' }}
-					className='dropzone'
-					draggable={true}
-					onDrop={this.onDrop}
-					onDragEnd={this.onDragEnd}
-					onDragOver={this.onDragOver}
-				>
-					{this.renderMemo()}
-				</div>
-				<h1 id='h1'>hi</h1>
+			<div
+				style={{ height: '100%', width: '100%' }}
+				className='dropzone'
+				onDrop={this.onDrop}
+				onDragEnd={this.onDragEnd}
+				onDragOver={this.onDragOver}
+			>
+				{this.renderMemo()}
 			</div>
 		);
 	}

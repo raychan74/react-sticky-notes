@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 export default class Memo extends Component {
 	render() {
@@ -14,11 +15,20 @@ export default class Memo extends Component {
 			content,
 			onChangeText,
 			onClickButtonAdd,
-			onClickButtonDelete
+			onClickButtonDelete,
+			onDragStart,
+			clientX,
+			clientY
 		} = this.props;
 
 		return (
-			<div style={containerStyle}>
+			<div
+				style={Object.assign({}, containerStyle, { left: `${clientX}px`, top: `${clientY}px` })}
+				id={`memo-${idx}`}
+				idx={idx}
+				draggable={true}
+				onDragStart={onDragStart}
+			>
 				<div style={buttonContainerStyle}>
 					<button
 						style={buttonStyle}
@@ -51,6 +61,9 @@ export default class Memo extends Component {
 
 const styles = {
 	containerStyle: {
+		position: 'relative',
+		left: '100px',
+		top: '10px',
 		border: '1px solid palevioletred',
 		background: 'lightblue',
 		minWidth: '200px',
@@ -90,4 +103,15 @@ const styles = {
 		outline: 'none',
 		resize: 'none'
 	},
+};
+
+Memo.propTypes = {
+	idx: PropTypes.number.isRequired,
+	content: PropTypes.string.isRequired,
+	onChangeText: PropTypes.func.isRequired,
+	onClickButtonAdd: PropTypes.func.isRequired,
+	onClickButtonDelete: PropTypes.func.isRequired,
+	onDragStart: PropTypes.func.isRequired,
+	clientX: PropTypes.number.isRequired,
+	clientY: PropTypes.number.isRequired
 };
