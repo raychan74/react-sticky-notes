@@ -9,13 +9,29 @@ export default class App extends Component {
 	constructor() {
 		super();
 		this.state = {
-			memo: [{ content: '' }]
+			memo: [{ content: '', clientX: 40, clientY: 40, zIndex: 0 }],
+			offsetX: 0,
+			offsetY: 0,
+			dragging: null,
+			zIndex: 0
 		};
 	}
 
 	onClickButtonAdd = () => {
+		const zIndex = this.state.zIndex + 1;
 		this.setState(prevState => (
-			{ memo: [...prevState.memo, { content: '' }] }
+			{
+				zIndex,
+				memo: [
+					...prevState.memo,
+					{
+						zIndex,
+						content: '',
+						clientX: 75,
+						clientY: 75
+					}
+				]
+			}
 		));
 	}
 
@@ -33,6 +49,39 @@ export default class App extends Component {
 		this.setState({ memo });
 	}
 
+	onDrop = e => {
+		const idx = this.state.dragging.getAttribute('idx');
+		const memo = this.state.memo;
+		const zIndex = this.state.zIndex + 1;
+		memo[idx].clientX = e.clientX - this.state.offsetX;
+		memo[idx].clientY = e.clientY - this.state.offsetY;
+		memo[idx].zIndex = zIndex;
+
+		this.setState({ memo, zIndex });
+	}
+
+	onDragOver = e => {
+		e.preventDefault();
+	}
+
+	onDragEnd = () => {
+		this.setState({ dragging: null });
+	}
+
+	onDragStart = e => {
+		const idx = e.target.getAttribute('idx');
+		const offsetX = e.clientX - this.state.memo[idx].clientX;
+		const offsetY = e.clientY - this.state.memo[idx].clientY;
+
+		this.setState({ offsetX, offsetY, dragging: e.target });
+	}
+
+	increaseZIndex = e => {
+		e.target.parentNode.style.zIndex = this.state.zIndex + 1;
+
+		this.setState(prevState => ({ zIndex: prevState.zIndex + 1 }));
+	}
+
 	renderMemo() {
 		return this.state.memo.map((val, idx) => {
 			return (
@@ -40,28 +89,30 @@ export default class App extends Component {
 					key={idx}
 					idx={idx}
 					content={val.content}
+					clientX={val.clientX}
+					clientY={val.clientY}
+					zIndex={val.zIndex}
 					onClickButtonAdd={this.onClickButtonAdd}
 					onClickButtonDelete={this.onClickButtonDelete}
 					onChangeText={this.onChangeText}
+					onDragStart={this.onDragStart}
+					increaseZIndex={this.increaseZIndex}
 				/>
 			);
 		});
 	}
 
 	render() {
+		console.log('render:', this.state);
 		return (
-			<div>
-				<div
-					style={{ height: '100%', width: '100%' }}
-					className='dropzone'
-					draggable={true}
-					onDrop={this.onDrop}
-					onDragEnd={this.onDragEnd}
-					onDragOver={this.onDragOver}
-				>
-					{this.renderMemo()}
-				</div>
-				<h1 id='h1'>hi</h1>
+			<div
+				style={{ height: '100%', width: '100%' }}
+				className='dropzone'
+				onDrop={this.onDrop}
+				onDragEnd={this.onDragEnd}
+				onDragOver={this.onDragOver}
+			>
+				{this.renderMemo()}
 			</div>
 		);
 	}
